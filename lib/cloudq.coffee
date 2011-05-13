@@ -7,9 +7,9 @@ class Cloudq
   EMPTY: 'empty'
   SUCCESS: 'success'
 
-  constructor: (db = 'localhost:27017/cloudq', collection_name = 'cloudq.jobs') ->
+  constructor: (db = 'flame.mongohq.com:27100/cloudq_staging', collection_name = 'cloudq.jobs') ->
     # Init MongoDb
-    @db = mongo.db(db)
+    @db = mongo.db(db, username='team', password='Jackdog1')
     @jobs = @db.collection(collection_name)
 
   queue: (name, job) ->
@@ -27,6 +27,8 @@ class Cloudq
       callback result
 
   remove: (id, callback) ->
+    console.log id
+    console.log callback
     @jobs.findById id, (err, job) =>
       result = { status: @EMPTY }
       if job
@@ -35,5 +37,12 @@ class Cloudq
         result = { status: @SUCCESS }
       callback result
 
+  clear: (calback) ->
+    result = { status: @EMPTY}
+    for job in @jobs
+      job.workflow_state = @DELETED
+      @jobs.updateById job._id, job
+      result = { status: @SUCCESS }
+    callback result
 
 exports.cloudq = new Cloudq()
