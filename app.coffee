@@ -1,13 +1,19 @@
 # Require libs
-sys = require 'sys'
 meryl = require 'meryl'
 cloudq = require('./lib/cloudq').cloudq
 
 # Create Web Server
 meryl
+  .get '/', (req, resp) ->
+    resp.end 'Welcome to Cloudq'
+
+  # .get '/clear', (req, resp) ->
+  #   cloudq.clear (status) ->
+  #     resp.end JSON.stringify({status: status})
+
   .post '/{queue}', (req, resp) ->
-    cloudq.queue req.params.queue, JSON.parse(req.postdata.toString()).job
-    resp.end JSON.stringify({ status: "success" })
+    cloudq.queue req.params.queue, JSON.parse(req.postdata.toString()).job, (status) ->
+      resp.end JSON.stringify({ status: status })
 
   .get '/{queue}', (req, resp) ->
     cloudq.reserve req.params.queue, (job) ->
@@ -15,10 +21,6 @@ meryl
 
   .h 'DELETE /{queue}/{id}', (req, resp) ->
     cloudq.remove req.params.id, (status) ->
-      resp.end JSON.stringify(status)
+      resp.end JSON.stringify({ status: status})
 
-  # .get '/clear', (req, resp) ->
-  #   cloudq.clear (status) ->
-  #     resp.end JSON.stringify(status)
-
-  .run(port: Number(process.env.VMC_APP_PORT || 8000))
+  .run(9957)
