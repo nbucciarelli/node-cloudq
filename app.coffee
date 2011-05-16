@@ -17,8 +17,8 @@ meryl
     cloudq.remove req.params.id, (status) ->
       resp.end JSON.stringify(status)
 
-  .get '/clear', (req, resp) ->
-    cloudq.clear (status) ->
-      resp.end JSON.stringify(status)
+  # .get '/clear', (req, resp) ->
+  #   cloudq.clear (status) ->
+  #     resp.end JSON.stringify(status)
 
   .run(port: Number(process.env.VMC_APP_PORT || 8000))

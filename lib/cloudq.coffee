@@ -7,9 +7,9 @@ class Cloudq
   EMPTY: 'empty'
   SUCCESS: 'success'
 
-  constructor: (db = 'localhost', collection_name = 'cloudq.jobs') ->
+  constructor: (db = 'flame.mongohq.com:27100/cloudq_staging', collection_name = 'cloudq.jobs') ->
     # Init MongoDb
-    @db = mongo.db(db)
+    @db = mongo.db(db, 'team', 'Jackdog1')
     @jobs = @db.collection(collection_name)
 
   queue: (name, job) ->
