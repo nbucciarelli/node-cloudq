@@ -1,3 +1,5 @@
+node_modules
+*.pem
 vendor
 npm-debug.log
 notes.txt
