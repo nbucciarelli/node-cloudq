@@ -4,6 +4,8 @@ connect = require 'connect'
 meryl = require 'meryl'
 cloudq = require('./lib/cloudq').cloudq
 
+# Add Logging Support
+meryl.p connect.logger()
 # Add Basic Auth
 meryl.p connect.basicAuth(process.env.APIKEY,process.env.SECRETKEY) if process.env.APIKEY? and process.env.SECRETKEY
 # Create Web Server
@@ -11,9 +13,9 @@ meryl
   .get '/', (req, resp) ->
     resp.end 'Welcome to Cloudq'
 
-  # .get '/clear', (req, resp) ->
-  #   cloudq.clear (status) ->
-  #     resp.end JSON.stringify({status: status})
+  .post '/delete/all_processed', (req, resp) ->
+    cloudq.delete_all (status) =>
+      resp.end JSON.stringify({ status: status})
 
   .post '/{queue}', (req, resp) ->
     cloudq.queue req.params.queue, JSON.parse(req.postdata.toString()).job, (status) ->
